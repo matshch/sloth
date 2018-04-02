@@ -418,7 +418,13 @@ class MainWindow(QMainWindow):
         filename = self.labeltool.getCurrentFilename()
         if filename is None:
             return self.fileSaveAs()
-        return self.labeltool.saveAnnotations(filename)
+        else:
+            reply = QMessageBox.question(self,
+                    "%s - Overwrite file" % (APP_NAME),
+                    "Are you sure to overwrite %s?" % (filename),
+                    QMessageBox.Yes|QMessageBox.No|QMessageBox.Cancel)
+            if reply == QMessageBox.Yes:
+                return self.labeltool.saveAnnotations(filename)
 
     def fileSaveAs(self):
         fname = '.'  # self.annotations.filename() or '.'

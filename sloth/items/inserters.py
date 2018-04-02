@@ -78,6 +78,10 @@ class PointItemInserter(ItemInserter):
         self.annotationFinished.emit()
         event.accept()
 
+    def mouseReleaseEvent(self, event, image_item):
+        self._scene.views()[0].viewport().setCursor(Qt.CrossCursor)
+        event.accept()
+
 
 class RectItemInserter(ItemInserter):
     def __init__(self, labeltool, scene, default_properties=None,
@@ -417,6 +421,10 @@ class PolygonItemInserter(ItemInserter):
             polygon[-1] = pos
             self._item.setPolygon(polygon)
 
+        event.accept()
+
+    def mouseReleaseEvent(self, event, image_item):
+        self._scene.views()[0].viewport().setCursor(Qt.CrossCursor)
         event.accept()
 
     def keyPressEvent(self, event, image_item):

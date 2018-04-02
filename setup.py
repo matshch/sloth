@@ -8,10 +8,13 @@ The documentation can be found at http://sloth.readthedocs.org/ .
 
 """
 import os
-from distutils.core import setup
+import os.path
+import sys
+from cx_Freeze import setup, Executable
 from distutils.command.install import INSTALL_SCHEMES
 import sloth
 
+sys.path.insert(1, os.path.dirname(os.path.realpath(__file__)))
 
 # the following installation setup is based on django's setup.py
 def fullsplit(path, result=None):
@@ -53,6 +56,20 @@ for dirpath, dirnames, filenames in os.walk(sloth_dir):
     elif filenames:
         data_files.append([dirpath, [os.path.join(dirpath, f) for f in filenames]])
 
+build_exe_options = {
+    'includes': ['numpy.core._methods',
+                 'numpy.lib.format'],
+    'include_msvcr': True,
+    # optimize 2 breaks __doc__
+    'optimize': 1
+}
+
+# GUI applications require a different base on Windows (the default is for a
+# console application).
+base = None
+if sys.platform == "win32":
+    base = "Win32GUI"
+
 setup(name='sloth',
       version=sloth.VERSION,
       description='The Sloth Labeling Tool',
@@ -61,5 +78,11 @@ setup(name='sloth',
       requires=['importlib', 'PyQt4', 'numpy'],
       packages=packages,
       data_files=data_files,
-      scripts=['sloth/bin/sloth']
+      options = {'build_exe': build_exe_options},
+      scripts=['sloth/bin/sloth'],
+      executables = [Executable(script='sloth/bin/sloth',
+                                icon='sloth/gui/icons/sloth.ico',
+                                base=base,
+                                shortcutName='Sloth',
+                                shortcutDir='ProgramMenuFolder')]
 )

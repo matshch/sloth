@@ -3,4 +3,5 @@ doc/_build/*
 .*.swp
 *.py~
 build/*
+dist/*
 .cache

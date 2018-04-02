@@ -999,7 +999,7 @@ class InterpolateRange(QObject):
             for l in range(len(lann)):
                 if lann[l]['type'] == fann[i]['type'] and lann[l]['class'] == fann[i]['class']:
                     lannIdx = l
-            if lannIdx == None:
+            if lannIdx is None:
                 LOG.error("Error: could not find matching label, skipping")
                 continue
 

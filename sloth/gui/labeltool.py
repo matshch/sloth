@@ -129,7 +129,7 @@ class MainWindow(QMainWindow):
 
         img = self.labeltool.getImage(new_image)
 
-        if img == None:
+        if img is None:
             self.controls.setFilename("")
             self.selectionmodel.setCurrentIndex(new_image.index(), QItemSelectionModel.ClearAndSelect|QItemSelectionModel.Rows)
             return

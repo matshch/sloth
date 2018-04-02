@@ -168,6 +168,10 @@ class MainWindow(QMainWindow):
             self.interpolateRange.interpolateRange()
             self.annotationMenu["Interpolate range"].setChecked(False)
 
+    def onSwitchImageModeChanged(self):
+        checked = self.annotationMenu["Switch image after annotation"].isChecked()
+        self.scene.switchImageMode(checked)
+
     def onScaleChanged(self, scale):
         self.zoominfo.setText("%.2f%%" % (100 * scale, ))
 
@@ -217,6 +221,12 @@ class MainWindow(QMainWindow):
             self.annotationMenu[a] = action
 
         for a in ["Interpolate range"]:
+            action = QAction(a, self)
+            action.setCheckable(True)
+            self.ui.menuAnnotation.addAction(action)
+            self.annotationMenu[a] = action
+
+        for a in ["Switch image after annotation"]:
             action = QAction(a, self)
             action.setCheckable(True)
             self.ui.menuAnnotation.addAction(action)
@@ -343,6 +353,7 @@ class MainWindow(QMainWindow):
         ## annotation menu
         self.annotationMenu["Copy from previous"].changed.connect(self.onCopyAnnotationsModeChanged)
         self.annotationMenu["Interpolate range"].changed.connect(self.onInterpolateRangeModeChanged)
+        self.annotationMenu["Switch image after annotation"].changed.connect(self.onSwitchImageModeChanged)
 
     def loadApplicationSettings(self):
         settings = QSettings()

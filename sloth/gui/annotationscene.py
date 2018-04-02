@@ -20,6 +20,7 @@ class AnnotationScene(QGraphicsScene):
         self._scene_item = None
         self._message = ""
         self._labeltool = labeltool
+        self._switch_image_mode = False
 
         self._itemfactory = Factory(items)
         self._inserterfactory = Factory(inserters)
@@ -146,7 +147,8 @@ class AnnotationScene(QGraphicsScene):
         if inserter is None:
             raise InvalidArgumentException("Could not find inserter for class '%s' with default properties '%s'" % (label_class, default_properties))
         inserter.inserterFinished.connect(self.onInserterFinished)
-        inserter.annotationFinished.connect(self.onAnnotationFinished)
+        if self._switch_image_mode:
+            inserter.annotationFinished.connect(self.onAnnotationFinished)
         self._labeltool.currentImageChanged.connect(inserter.imageChange)
         self._inserter = inserter
         LOG.debug("Created inserter for class '%s' with default properties '%s'" % (label_class, default_properties))
@@ -497,4 +499,13 @@ class AnnotationScene(QGraphicsScene):
 
         functools.update_wrapper(paint, oldpaint)
         RectItem.paint = paint
+
+    # Switch image after annotation mode change
+    def switchImageMode(self, enabled):
+        self._switch_image_mode = enabled
+        if self._inserter is not None:
+            if enabled:
+                self._inserter.annotationFinished.connect(self.onAnnotationFinished)
+            else:
+                self._inserter.annotationFinished.disconnect(self.onAnnotationFinished)
 
